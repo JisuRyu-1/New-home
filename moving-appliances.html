@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b35">
+  <title>이사 가전 · 가구 준비 목록</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17313a;
+      --muted: #718089;
+      --line: #e7e9e5;
+      --paper: #f7f7f3;
+      --white: #fff;
+      --teal: #177b78;
+      --teal-dark: #12625f;
+      --mint: #e7f3ef;
+      --orange: #ed9561;
+      --shadow: 0 18px 52px rgba(21, 47, 54, .075);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(23, 123, 120, .35);
+      outline-offset: 3px;
+    }
+    .wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+
+    .topbar {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 34px; height: 34px;
+      background: var(--ink); color: white; border-radius: 11px; font-size: 18px;
+    }
+    .top-note { color: var(--muted); font-size: 12px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 259px;
+      display: flex;
+      align-items: center;
+      padding: 38px 46px;
+      border-radius: 26px;
+      background: #102e37;
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+    .hero::before { width: 480px; height: 480px; right: -95px; top: -270px; background: #1c4650; }
+    .hero::after { width: 320px; height: 320px; right: 125px; bottom: -260px; background: #1b414a; }
+    .hero-copy { position: relative; z-index: 1; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; color: #a6d5cb; font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 20px; height: 1px; background: currentColor; }
+    h1 { margin: 13px 0 11px; font-size: clamp(29px, 3.4vw, 43px); letter-spacing: -.06em; line-height: 1.24; }
+    .hero p { max-width: 600px; margin: 0; color: #b8cbcd; font-size: 14px; }
+    .hero-art { position: absolute; z-index: 1; right: 53px; top: 31px; width: 268px; height: 205px; }
+    .hero-art .ring { position: absolute; inset: 3px 26px 12px 30px; border: 1px solid rgba(168, 211, 205, .19); border-radius: 50%; }
+    .hero-art .ring:nth-child(2) { inset: 24px 48px 33px 52px; }
+    .hero-art .box { position: absolute; border-radius: 13px; box-shadow: 0 20px 30px rgba(0,0,0,.14); }
+    .box.a { width: 94px; height: 102px; left: 42px; bottom: 18px; background: #e7cbaa; transform: rotate(-9deg); }
+    .box.a::before, .box.b::before { content: ""; position: absolute; top: 0; bottom: 0; left: 44%; width: 13%; background: rgba(255,255,255,.22); }
+    .box.b { width: 117px; height: 117px; right: 22px; bottom: 22px; background: #d39c74; transform: rotate(7deg); }
+    .box.c { width: 63px; height: 64px; right: 83px; top: 16px; background: #f3e2c8; transform: rotate(-4deg); }
+    .box.c::before { content: "⌂"; position: absolute; color: #357a74; font-size: 34px; line-height: 1; left: 19px; top: 14px; }
+    .spark { position: absolute; font-size: 26px; color: #e6ad78; }
+    .spark.one { top: 4px; right: 10px; } .spark.two { bottom: 5px; left: 8px; font-size: 18px; }
+
+    .summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 13px; margin: -27px 28px 0; position: relative; z-index: 2; }
+    .summary-card { min-height: 100px; padding: 19px 22px; background: white; border: 1px solid #eef0ec; border-radius: 18px; box-shadow: 0 14px 33px rgba(20, 49, 55, .045); }
+    .summary-card .label { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .summary-card strong { display: inline-block; margin-top: 3px; font-size: 29px; line-height: 1.2; letter-spacing: -.05em; }
+    .summary-card .suffix { margin-left: 4px; color: var(--muted); font-size: 12px; }
+    .summary-card.estimate-card strong { color: var(--teal); font-size: 26px; }
+
+    .content { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 26px; align-items: start; margin-top: 46px; padding-bottom: 70px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 16px; }
+    .section-head .kicker { margin: 0 0 4px; color: var(--teal); font-weight: 800; font-size: 11px; letter-spacing: .12em; }
+    h2 { margin: 0; font-size: 22px; line-height: 1.3; letter-spacing: -.05em; }
+    .section-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .move-panel, .tip-panel { background: white; border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 35px rgba(20,49,55,.03); }
+    .move-panel { padding: 9px 18px; }
+    .move-item { display: flex; align-items: center; gap: 13px; padding: 16px 0; }
+    .move-entry + .move-entry { border-top: 1px solid #eef0ed; }
+    .check { appearance: none; display: grid; place-items: center; flex: none; width: 22px; height: 22px; margin: 0; border: 1.5px solid #c5d1cc; border-radius: 7px; background: white; cursor: pointer; }
+    .check:checked { background: var(--teal); border-color: var(--teal); }
+    .check:checked::before { content: "✓"; color: white; font-size: 15px; line-height: 1; font-weight: 800; }
+    .move-icon { display: grid; place-items: center; width: 37px; height: 37px; flex: none; border-radius: 11px; background: #f1f4f2; font-size: 19px; }
+    .move-name { display: block; font-size: 14px; font-weight: 750; }
+    .move-meta { display: block; color: #8a989d; font-size: 11px; }
+    .move-item:has(.check:checked) .move-name { text-decoration: line-through; color: #97a2a1; }
+    .tip-panel { margin-top: 17px; padding: 20px; background: #e8f2ee; border-color: #dfeee8; }
+    .tip-panel .tip-icon { font-size: 19px; }
+    .tip-panel strong { display: block; margin: 9px 0 5px; font-size: 13px; }
+    .tip-panel p { margin: 0; color: #5d7778; font-size: 12px; line-height: 1.6; }
+
+    .purchase-head { margin-bottom: 18px; }
+    .purchase-head .section-count { padding-bottom: 2px; }
+    .progress { height: 5px; background: #e6eae5; border-radius: 99px; overflow: hidden; margin: 10px 0 22px; }
+    .progress span { display: block; width: 0; height: 100%; background: var(--teal); border-radius: inherit; transition: width .25s ease; }
+    .product-list { display: grid; gap: 13px; }
+    .product { background: white; border: 1px solid #e8ebe7; border-radius: 20px; box-shadow: 0 10px 28px rgba(20,49,55,.025); overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+    .product:hover, .product.is-open { border-color: #c9dfd8; box-shadow: 0 14px 32px rgba(20,49,55,.06); }
+    .product-top { display: flex; align-items: center; gap: 15px; min-height: 96px; padding: 16px 20px; }
+    .product-icon { display: grid; place-items: center; width: 57px; height: 57px; flex: none; border-radius: 16px; background: var(--icon-bg, #eaf2ef); font-size: 29px; }
+    .product-info { min-width: 0; flex: 1; }
+    .product-number { display: block; color: #8c9a99; font-size: 10px; font-weight: 850; letter-spacing: .1em; }
+    .product-title { margin: 2px 0 1px; font-size: 17px; font-weight: 800; letter-spacing: -.045em; }
+    .product-summary { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--muted); font-size: 12px; }
+    .product-actions { display: flex; align-items: center; gap: 10px; }
+    .done-label { display: inline-flex; align-items: center; gap: 7px; color: #748487; white-space: nowrap; font-size: 12px; }
+    .done-label .check { width: 19px; height: 19px; border-radius: 6px; }
+    .details-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 38px; min-width: 93px; border: 1px solid #dce8e3; border-radius: 10px; background: #f6faf8; color: #246b68; font-weight: 750; font-size: 12px; }
+    .details-toggle .chevron { display: inline-block; transition: transform .2s; font-size: 13px; }
+    .is-open .details-toggle .chevron { transform: rotate(180deg); }
+    .product.done .product-title { color: #98a6a4; text-decoration: line-through; }
+    .product.done .product-icon { filter: grayscale(.6); opacity: .7; }
+    .product-details { display: none; border-top: 1px solid #ecf0eb; padding: 22px 20px 21px; background: #fdfefd; }
+    .is-open .product-details { display: block; }
+    .fields { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 12px; }
+    .field { min-width: 0; }
+    .field label { display: block; margin-bottom: 6px; color: #526970; font-size: 11px; font-weight: 800; }
+    .field input { width: 100%; height: 42px; padding: 0 12px; background: white; border: 1px solid #dde5df; border-radius: 9px; color: var(--ink); outline: none; font-size: 12px; }
+    .field input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(23,123,120,.09); }
+    .field input::placeholder { color: #a5afae; }
+    .details-footer { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-top: 18px; }
+    .query-preview { min-width: 0; color: #788b8d; font-size: 11px; }
+    .query-preview b { display: block; margin-bottom: 2px; color: #51686b; font-size: 10px; }
+    .query-preview span { display: block; overflow: hidden; max-width: 430px; white-space: nowrap; text-overflow: ellipsis; }
+    .search-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: none; min-width: 136px; height: 42px; padding: 0 15px; border: 0; border-radius: 10px; color: white; background: var(--teal); font-size: 12px; font-weight: 800; text-decoration: none; transition: background .15s, transform .15s; }
+    .search-button:hover { background: var(--teal-dark); transform: translateY(-1px); }
+    .search-button svg { width: 15px; height: 15px; }
+    .under-note { margin: 15px 2px 0; color: #879495; font-size: 11px; line-height: 1.6; }
+    .record-disclosure { padding: 0 0 15px; }
+    .record-disclosure summary { width: max-content; max-width: 100%; margin: -3px 0 0 47px; color: var(--teal); font-size: 11px; font-weight: 800; cursor: pointer; }
+    .record-disclosure[open] summary { margin-bottom: 16px; }
+    .record-fields { display: grid; grid-template-columns: 1fr 1.6fr; gap: 12px; }
+    .record-fields h4 { grid-column: 1 / -1; margin: 0 0 1px; font-size: 13px; letter-spacing: -.03em; }
+    .record-fields .field.wide { grid-column: 1 / -1; }
+    .record-fields textarea { width: 100%; min-height: 75px; padding: 10px 12px; resize: vertical; background: white; border: 1px solid #dde5df; border-radius: 9px; color: var(--ink); outline: none; font-size: 12px; }
+    .record-fields textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(23,123,120,.09); }
+    .record-fields textarea::placeholder { color: #a5afae; }
+    .record-link { display: inline-flex; align-items: center; width: max-content; max-width: 100%; color: var(--teal); font-size: 11px; font-weight: 800; text-decoration: none; }
+    .record-link:hover { text-decoration: underline; }
+    .record-link[hidden] { display: none; }
+    .record-hint { display: block; margin-top: 4px; color: #8a989d; font-size: 10px; }
+    .record-hint[hidden] { display: none; }
+    .product .record-fields { margin-top: 20px; padding-top: 19px; border-top: 1px solid #e9eeea; }
+    .move-entry .record-fields { grid-template-columns: 1fr; gap: 10px; }
+    .move-entry .record-fields .field.wide { grid-column: auto; }
+    .more-section { margin: 0 0 48px; }
+    .more-section .section-head { margin-bottom: 18px; }
+    .item-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .simple-card { background: white; border: 1px solid var(--line); border-radius: 17px; box-shadow: 0 10px 28px rgba(20,49,55,.025); }
+    .simple-item { display: flex; align-items: center; gap: 14px; min-height: 86px; padding: 16px 20px; border-radius: inherit; cursor: pointer; }
+    .simple-card .record-disclosure { padding: 0 20px 16px; }
+    .simple-card .record-disclosure summary { margin-left: 60px; }
+    .simple-card .record-disclosure[open] summary { margin-bottom: 16px; }
+    .simple-icon { display: grid; place-items: center; flex: none; width: 46px; height: 46px; background: #f0f3ef; border-radius: 13px; font-size: 24px; }
+    .simple-copy { flex: 1; min-width: 0; }
+    .simple-copy strong { display: block; font-size: 14px; letter-spacing: -.035em; }
+    .simple-copy small { display: block; margin-top: 1px; color: var(--muted); font-size: 11px; }
+    .simple-item:has(.check:checked) .simple-copy strong { color: #98a6a4; text-decoration: line-through; }
+    .room-panel { margin-top: 16px; padding: 25px; background: white; border: 1px solid var(--line); border-radius: 20px; }
+    .room-panel-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 19px; }
+    .room-panel-head h3 { margin: 0; font-size: 17px; letter-spacing: -.04em; }
+    .room-panel-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .room-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+    .room-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 17px; border: 1px solid #e8eeea; border-radius: 15px; background: #fbfdfb; }
+    .room-card-top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .room-card h4 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; letter-spacing: -.035em; }
+    .room-card h4::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+    .room-field label { display: block; margin-bottom: 5px; color: #65777b; font-size: 11px; font-weight: 750; }
+    .room-field select, .room-field input { width: 100%; height: 39px; padding: 0 10px; color: var(--ink); background: white; border: 1px solid #dfe7e1; border-radius: 9px; outline: none; font-size: 12px; }
+    .room-field select:focus, .room-field input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(23,123,120,.09); }
+    .room-field.wide { grid-column: 1 / -1; }
+    .iot-label { display: inline-flex; align-items: center; gap: 7px; color: #5c7073; font-size: 11px; font-weight: 750; white-space: nowrap; cursor: pointer; }
+    .iot-label input { appearance: none; position: relative; width: 32px; height: 19px; margin: 0; border-radius: 99px; background: #d1dbd6; cursor: pointer; transition: background .2s; }
+    .iot-label input::before { content: ""; position: absolute; width: 13px; height: 13px; top: 3px; left: 3px; border-radius: 50%; background: white; box-shadow: 0 1px 3px rgba(0,0,0,.16); transition: transform .2s; }
+    .iot-label input:checked { background: var(--teal); }
+    .iot-label input:checked::before { transform: translateX(13px); }
+    .footer { border-top: 1px solid #e6eae5; padding: 25px 0 36px; color: #8c9999; font-size: 11px; }
+    .footer .wrap { display: flex; justify-content: space-between; gap: 12px; }
+    .save-status { color: #55847d; }
+
+    @media (max-width: 900px) {
+      .summary { grid-template-columns: repeat(3, 1fr); }
+      .content { grid-template-columns: 1fr; }
+      .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
+      .sidebar .section-head { grid-column: 1 / -1; margin-bottom: 0; }
+      .tip-panel { margin-top: 0; min-height: 100%; }
+      .room-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .topbar { height: 60px; }
+      .top-note { display: none; }
+      .hero { min-height: 228px; padding: 32px 27px; border-radius: 20px; }
+      .hero p { max-width: 330px; font-size: 12px; }
+      .hero-art { opacity: .19; right: -50px; top: 28px; }
+      .summary { grid-template-columns: repeat(2, 1fr); margin: -23px 9px 0; gap: 7px; }
+      .summary-card { min-height: 81px; padding: 14px 11px; border-radius: 13px; }
+      .summary-card .label { font-size: 10px; }
+      .summary-card strong { font-size: 22px; }
+      .summary-card .suffix { font-size: 10px; }
+      .summary-card.estimate-card { grid-column: span 2; }
+      .summary-card.estimate-card strong { font-size: 22px; }
+      .content { margin-top: 39px; gap: 36px; }
+      .sidebar { display: block; }
+      .sidebar .section-head { margin-bottom: 15px; }
+      .tip-panel { margin-top: 13px; }
+      .product-top { gap: 11px; padding: 14px; min-height: 83px; }
+      .product-icon { width: 45px; height: 45px; border-radius: 12px; font-size: 24px; }
+      .product-title { font-size: 15px; }
+      .product-summary { max-width: 150px; font-size: 11px; }
+      .product-actions { gap: 7px; }
+      .done-label { font-size: 0; }
+      .done-label .check { width: 21px; height: 21px; }
+      .details-toggle { min-width: 67px; height: 34px; font-size: 11px; }
+      .product-details { padding: 18px 15px; }
+      .fields { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .fields .field:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+      .details-footer { align-items: stretch; flex-direction: column; }
+      .query-preview span { max-width: 100%; }
+      .search-button { width: 100%; }
+      .item-grid { grid-template-columns: 1fr; }
+      .simple-item { min-height: 73px; padding: 12px 14px; }
+      .simple-card .record-disclosure { padding: 0 14px 14px; }
+      .simple-card .record-disclosure summary { margin-left: 60px; }
+      .record-fields { grid-template-columns: 1fr; }
+      .record-fields .field.wide { grid-column: auto; }
+      .room-panel { padding: 17px; }
+      .room-panel-head { display: block; }
+      .room-card { padding: 14px; }
+      .footer .wrap { display: block; }
+      .footer .save-status { display: block; margin-top: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wrap">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">⌂</span><span>우리 집 이사 노트</span></div>
+    <span class="top-note">새집을 위한 가전 · 가구 준비 체크리스트</span>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <div class="eyebrow">MOVING HOME · CHECKLIST</div>
+        <h1 id="page-title">새집 준비,<br>하나씩 채워가요.</h1>
+        <p>가전과 가구를 한눈에 정리하고, 방마다 필요한 커튼·블라인드와 IoT 옵션까지 계획해 보세요.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="ring"></div><div class="ring"></div><div class="box a"></div><div class="box b"></div><div class="box c"></div><div class="spark one">✳</div><div class="spark two">✦</div></div>
+    </section>
+
+    <section class="summary" aria-label="준비 현황">
+      <div class="summary-card"><span class="label">이전할 가전</span><strong id="move-count">2</strong><span class="suffix">개</span></div>
+      <div class="summary-card"><span class="label">구매할 가전</span><strong id="buy-count">8</strong><span class="suffix">개</span></div>
+      <div class="summary-card"><span class="label">가구 · 기타</span><strong id="other-count">8</strong><span class="suffix">개</span></div>
+      <div class="summary-card"><span class="label">준비 완료</span><strong id="done-count">0</strong><span class="suffix" id="total-count">/ 18개</span></div>
+      <div class="summary-card estimate-card"><span class="label">구매 가전 예상 합계</span><strong id="appliance-estimate">0</strong><span class="suffix">원</span></div>
+    </section>
+
+    <div class="content">
+      <aside class="sidebar" aria-labelledby="move-title">
+        <div class="section-head">
+          <div><p class="kicker">TAKE WITH YOU</p><h2 id="move-title">이전할 가전</h2></div>
+          <span class="section-count" id="move-progress">0 / 2 완료</span>
+        </div>
+        <div class="move-panel">
+          <label class="move-item"><input class="check move-check" type="checkbox" data-id="induction"><span class="move-icon" aria-hidden="true">♨️</span><span><span class="move-name">인덕션</span><span class="move-meta">철거 · 이전 설치 확인</span></span></label>
+          <label class="move-item"><input class="check move-check" type="checkbox" data-id="dishwasher"><span class="move-icon" aria-hidden="true">🫧</span><span><span class="move-name">식기세척기</span><span class="move-meta">배수 · 급수 연결 확인</span></span></label>
+        </div>
+        <div class="tip-panel"><span class="tip-icon" aria-hidden="true">✳️</span><strong>이전 설치를 미리 예약하세요</strong><p>인덕션과 식기세척기는 철거 및 재설치가 필요할 수 있어요. 이사 일정에 맞춰 업체와 설치 가능 여부를 확인해 두세요.</p></div>
+      </aside>
+
+      <section class="purchase" aria-labelledby="purchase-title">
+        <div class="section-head purchase-head">
+          <div><p class="kicker">TO BUY</p><h2 id="purchase-title">새로 구매할 가전</h2></div>
+          <span class="section-count" id="buy-progress">0 / 8 완료</span>
+        </div>
+        <div class="progress" role="progressbar" aria-label="구매 준비 완료율" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><span></span></div>
+        <div class="product-list" id="product-list"></div>
+        <p class="under-note">브랜드와 필수 조건은 다나와 검색어에 포함됩니다. 예산 상한은 기록용이며, 입력한 예상 구매가만 상단 합계에 반영됩니다.</p>
+      </section>
+    </div>
+
+    <section class="more-section" aria-labelledby="furniture-title">
+      <div class="section-head">
+        <div><p class="kicker">FURNITURE</p><h2 id="furniture-title">필요한 가구</h2></div>
+        <span class="section-count" id="furniture-progress">0 / 5 완료</span>
+      </div>
+      <div class="item-grid">
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">📚</span><span class="simple-copy"><strong>책상</strong><small>아인 공부책상</small></span><input class="check furniture-check" type="checkbox" data-id="desk-ain" aria-label="책상 - 아인 공부책상 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">🖥️</span><span class="simple-copy"><strong>컴퓨터테이블</strong><small>서재</small></span><input class="check furniture-check" type="checkbox" data-id="computer-table" aria-label="컴퓨터테이블 - 서재 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">🍽️</span><span class="simple-copy"><strong>식탁 및 의자</strong><small>다이닝 공간</small></span><input class="check furniture-check" type="checkbox" data-id="dining-table" aria-label="식탁 및 의자 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">🗄️</span><span class="simple-copy"><strong>틈새장</strong><small>아인 방 · 서재방</small></span><input class="check furniture-check" type="checkbox" data-id="slim-cabinet" aria-label="틈새장 - 아인 방, 서재방 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">🛋️</span><span class="simple-copy"><strong>거실 소파 앞 테이블</strong><small>거실</small></span><input class="check furniture-check" type="checkbox" data-id="coffee-table" aria-label="거실 소파 앞 테이블 준비 완료"></label>
+      </div>
+    </section>
+
+    <section class="more-section" aria-labelledby="extra-title">
+      <div class="section-head">
+        <div><p class="kicker">EXTRA ITEMS</p><h2 id="extra-title">기타 품목</h2></div>
+        <span class="section-count" id="extra-progress">0 / 3 완료</span>
+      </div>
+      <div class="item-grid">
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">🪟</span><span class="simple-copy"><strong>커튼</strong><small>아래에서 방별 옵션 선택</small></span><input class="check extra-check" type="checkbox" data-id="curtain" aria-label="커튼 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">▥</span><span class="simple-copy"><strong>블라인드</strong><small>아래에서 방별 옵션 선택</small></span><input class="check extra-check" type="checkbox" data-id="blind" aria-label="블라인드 준비 완료"></label>
+        <label class="simple-item"><span class="simple-icon" aria-hidden="true">💡</span><span class="simple-copy"><strong>조명 (스탠드)</strong><small>설치 위치와 제품 확인</small></span><input class="check extra-check" type="checkbox" data-id="lamp" aria-label="조명 스탠드 준비 완료"></label>
+      </div>
+      <div class="room-panel">
+        <div class="room-panel-head"><div><h3>방별 창가 옵션</h3><p>커튼과 블라인드 종류를 각각 고르고, 방마다 IoT 적용 여부를 설정하세요.</p></div><span class="section-count">총 7개 공간</span></div>
+        <div class="room-list" id="room-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="wrap"><span>우리 집 이사 노트 · 새집 준비 목록</span><span class="save-status" id="save-status">입력한 내용은 이 브라우저에 자동 저장됩니다.</span></div></footer>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'moving-appliances-v1';
+      const products = [
+        { id: 'fridge', name: '냉장고', icon: '🧊', bg: '#e9f1f4', example: '예: 양문형, 800L, 에너지효율 1등급', hint: '예: 4도어 800L' },
+        { id: 'kimchi', name: '김치냉장고', icon: '🥬', bg: '#eef3e5', example: '예: 스탠드형, 400L, 3도어', hint: '예: 스탠드형 400L' },
+        { id: 'washer', name: '세탁기', icon: '🫧', bg: '#eaf0f8', example: '예: 드럼, 24kg, 자동세제투입', hint: '예: 드럼 24kg' },
+        { id: 'tv', name: 'TV', icon: '📺', bg: '#efeafa', example: '예: 75인치, OLED, 4K', hint: '예: 75인치 OLED' },
+        { id: 'oven', name: '오븐/에어프라이어', icon: '🍞', bg: '#fff1e6', example: '예: 30L, 스팀오븐, 에어프라이 기능', hint: '예: 30L 에어프라이어' },
+        { id: 'purifier', name: '정수기', icon: '💧', bg: '#e6f4f4', example: '예: 직수형, 냉온정, 자가관리', hint: '예: 직수형 냉온정' },
+        { id: 'robot', name: '로봇청소기', icon: '🤖', bg: '#f2f0ea', example: '예: 물걸레, 자동먼지비움, 문턱', hint: '예: 물걸레 자동먼지비움' },
+        { id: 'system-ac', name: '시스템에어컨', icon: '❄️', bg: '#e6f3f7', example: '예: 천장형, 4way, 에너지효율 1등급', hint: '예: 천장형 4way' }
+      ];
+      const rooms = [
+        { id: 'ain', name: '아인 방' }, { id: 'ami', name: '아미 방' },
+        { id: 'study', name: '서재' }, { id: 'master', name: '안방' },
+        { id: 'music', name: '악기 방' }, { id: 'living', name: '거실' },
+        { id: 'kitchen', name: '주방' }
+      ];
+      const curtainOptions = ['미정', '설치 안 함', '암막', '쉬폰', '암막 + 쉬폰', '린넨', '기타'];
+      const blindOptions = ['미정', '설치 안 함', '콤비', '롤스크린', '우드', '허니콤', '기타'];
+      const defaultState = { moved: {}, bought: {}, filters: {}, furniture: {}, extras: {}, rooms: {}, records: {} };
+      let state = defaultState;
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && typeof saved === 'object') {
+          state = {
+            moved: saved.moved && typeof saved.moved === 'object' ? saved.moved : {},
+            bought: saved.bought && typeof saved.bought === 'object' ? saved.bought : {},
+            filters: saved.filters && typeof saved.filters === 'object' ? saved.filters : {},
+            furniture: saved.furniture && typeof saved.furniture === 'object' ? saved.furniture : {},
+            extras: saved.extras && typeof saved.extras === 'object' ? saved.extras : {},
+            rooms: saved.rooms && typeof saved.rooms === 'object' ? saved.rooms : {},
+            records: saved.records && typeof saved.records === 'object' ? saved.records : {}
+          };
+        }
+      } catch (_) { /* 저장소를 사용할 수 없어도 검색은 계속 작동합니다. */ }
+
+      const list = document.getElementById('product-list');
+      const searchIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>';
+      products.forEach((product, index) => {
+        const card = document.createElement('article');
+        card.className = 'product';
+        card.dataset.id = product.id;
+        card.style.setProperty('--icon-bg', product.bg);
+        card.innerHTML = `
+          <div class="product-top">
+            <span class="product-icon" aria-hidden="true">${product.icon}</span>
+            <div class="product-info">
+              <span class="product-number">ITEM ${String(index + 1).padStart(2, '0')}</span>
+              <h3 class="product-title">${product.name}</h3>
+              <span class="product-summary">검색 조건을 입력해 보세요</span>
+            </div>
+            <div class="product-actions">
+              <label class="done-label"><input class="check buy-check" type="checkbox" aria-label="${product.name} 구매 완료">구매 완료</label>
+              <button class="details-toggle" type="button" aria-expanded="false" aria-label="${product.name} 검색 조건과 기록 열기">조건 · 기록 <span class="chevron" aria-hidden="true">⌄</span></button>
+            </div>
+          </div>
+          <div class="product-details">
+            <div class="fields">
+              <div class="field"><label for="brand-${product.id}">브랜드</label><input id="brand-${product.id}" data-field="brand" placeholder="예: 삼성전자, LG전자" autocomplete="off"></div>
+              <div class="field"><label for="spec-${product.id}">크기 · 용량 · 필수 기능</label><input id="spec-${product.id}" data-field="spec" placeholder="${product.hint}" autocomplete="off"></div>
+              <div class="field"><label for="budget-${product.id}">예산 상한 (원)</label><input id="budget-${product.id}" data-field="budget" type="text" inputmode="numeric" placeholder="예: 1,500,000" autocomplete="off"></div>
+            </div>
+            <div class="fields" style="grid-template-columns:1fr; margin-top:12px">
+              <div class="field"><label for="extra-${product.id}">추가 검색어</label><input id="extra-${product.id}" data-field="extra" placeholder="${product.example}" autocomplete="off"></div>
+            </div>
+            <div class="details-footer">
+              <div class="query-preview"><b>다나와 검색어</b><span></span></div>
+              <a class="search-button" href="https://search.danawa.com/dsearch.php" target="_blank" rel="noopener noreferrer" aria-label="다나와에서 ${product.name} 검색">${searchIcon} 다나와 검색 ↗</a>
+            </div>
+          </div>`;
+        list.appendChild(card);
+        addRecordFields(card.querySelector('.product-details'), 'buy', product.id, product.name, () => updateCard(card, product));
+
+        const filters = state.filters[product.id] || {};
+        card.querySelectorAll('[data-field]').forEach(input => {
+          input.value = typeof filters[input.dataset.field] === 'string' ? filters[input.dataset.field] : '';
+          input.addEventListener('input', () => {
+            state.filters[product.id] ||= {};
+            state.filters[product.id][input.dataset.field] = input.value;
+            if (input.dataset.field === 'budget') {
+              const digits = input.value.replace(/\D/g, '').slice(0, 12);
+              input.value = digits ? Number(digits).toLocaleString('ko-KR') : '';
+              state.filters[product.id].budget = input.value;
+            }
+            updateCard(card, product);
+            save();
+          });
+        });
+        const checkbox = card.querySelector('.buy-check');
+        checkbox.checked = Boolean(state.bought[product.id]);
+        checkbox.addEventListener('change', () => {
+          state.bought[product.id] = checkbox.checked;
+          card.classList.toggle('done', checkbox.checked);
+          updateCounts();
+          save();
+        });
+        card.querySelector('.details-toggle').addEventListener('click', event => {
+          const open = card.classList.toggle('is-open');
+          event.currentTarget.setAttribute('aria-expanded', String(open));
+          event.currentTarget.setAttribute('aria-label', `${product.name} 검색 조건과 기록 ${open ? '닫기' : '열기'}`);
+          if (open) card.querySelector('[data-field="brand"]').focus();
+        });
+        updateCard(card, product);
+        card.classList.toggle('done', checkbox.checked);
+      });
+
+      document.querySelectorAll('.move-item').forEach(label => {
+        const input = label.querySelector('.move-check');
+        const name = label.querySelector('.move-name').textContent;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'move-entry';
+        label.replaceWith(wrapper);
+        wrapper.appendChild(label);
+        addRecordDisclosure(wrapper, 'move', input.dataset.id, name);
+      });
+      document.querySelectorAll('.move-check').forEach(input => {
+        input.checked = Boolean(state.moved[input.dataset.id]);
+        input.addEventListener('change', () => {
+          state.moved[input.dataset.id] = input.checked;
+          updateCounts();
+          save();
+        });
+      });
+
+      for (const [selector, stateKey] of [['.furniture-check', 'furniture'], ['.extra-check', 'extras']]) {
+        document.querySelectorAll(selector).forEach(input => {
+          const label = input.closest('.simple-item');
+          const name = label.querySelector('.simple-copy strong').textContent;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'simple-card';
+          label.replaceWith(wrapper);
+          wrapper.appendChild(label);
+          addRecordDisclosure(wrapper, stateKey, input.dataset.id, name);
+          input.checked = Boolean(state[stateKey][input.dataset.id]);
+          input.addEventListener('change', () => {
+            state[stateKey][input.dataset.id] = input.checked;
+            updateCounts();
+            save();
+          });
+        });
+      }
+
+      const roomList = document.getElementById('room-list');
+      const optionMarkup = options => options.map(option => `<option value="${option}">${option}</option>`).join('');
+      rooms.forEach(room => {
+        const card = document.createElement('div');
+        card.className = 'room-card';
+        card.innerHTML = `
+          <div class="room-card-top"><h4>${room.name}</h4><label class="iot-label">IoT 적용 <input type="checkbox" data-field="iot" aria-label="${room.name} IoT 적용"></label></div>
+          <div class="room-field"><label for="curtain-${room.id}">커튼</label><select id="curtain-${room.id}" data-field="curtain">${optionMarkup(curtainOptions)}</select></div>
+          <div class="room-field"><label for="blind-${room.id}">블라인드</label><select id="blind-${room.id}" data-field="blind">${optionMarkup(blindOptions)}</select></div>
+          <div class="room-field wide"><label for="note-${room.id}">상세 옵션 · 색상 · 치수 메모</label><input id="note-${room.id}" data-field="note" placeholder="예: 베이지, 창가 너비 240cm, 전동 레일" autocomplete="off"></div>`;
+        roomList.appendChild(card);
+        const roomState = state.rooms[room.id] || {};
+        card.querySelectorAll('[data-field]').forEach(input => {
+          const field = input.dataset.field;
+          if (field === 'iot') input.checked = Boolean(roomState.iot);
+          else if (typeof roomState[field] === 'string') input.value = roomState[field];
+          input.addEventListener(field === 'note' ? 'input' : 'change', () => {
+            state.rooms[room.id] ||= {};
+            state.rooms[room.id][field] = field === 'iot' ? input.checked : input.value;
+            save();
+          });
+        });
+      });
+
+      function addRecordDisclosure(container, group, id, name) {
+        const disclosure = document.createElement('details');
+        disclosure.className = 'record-disclosure';
+        const summary = document.createElement('summary');
+        summary.textContent = '링크 · 메모 · 가격 기록';
+        summary.setAttribute('aria-label', `${name} 링크, 메모, 가격 기록 열기`);
+        disclosure.appendChild(summary);
+        container.appendChild(disclosure);
+        addRecordFields(disclosure, group, id, name);
+      }
+
+      function addRecordFields(container, group, id, name, onPriceChange) {
+        const key = `${group}:${id}`;
+        const fields = document.createElement('div');
+        fields.className = 'record-fields';
+        const prefix = `record-${group}-${id}`;
+        fields.innerHTML = `
+          <h4>${group === 'buy' ? '검색 후 기록' : `${name} 기록`}</h4>
+          <div class="field"><label for="${prefix}-price">${group === 'move' ? '이전 예상 비용' : '대략적인 가격'} (원)</label><input id="${prefix}-price" data-record-field="price" type="text" inputmode="numeric" placeholder="예: 1,200,000" autocomplete="off"></div>
+          <div class="field"><label for="${prefix}-link">후보 · 참고 링크</label><input id="${prefix}-link" data-record-field="link" type="text" inputmode="url" placeholder="https://..." autocomplete="off"><a class="record-link" target="_blank" rel="noopener noreferrer" hidden>저장한 링크 열기 ↗</a><span class="record-hint" hidden>http 또는 https 주소를 입력해 주세요.</span></div>
+          <div class="field wide"><label for="${prefix}-note">메모</label><textarea id="${prefix}-note" data-record-field="note" placeholder="모델명, 설치 조건, 비교 내용 등을 적어 두세요."></textarea></div>`;
+        container.appendChild(fields);
+        const saved = state.records[key] || {};
+        fields.querySelectorAll('[data-record-field]').forEach(input => {
+          const field = input.dataset.recordField;
+          input.value = typeof saved[field] === 'string' ? saved[field] : '';
+          input.addEventListener('input', () => {
+            if (field === 'price') {
+              const digits = input.value.replace(/\D/g, '').slice(0, 12);
+              input.value = digits ? Number(digits).toLocaleString('ko-KR') : '';
+            }
+            state.records[key] ||= {};
+            state.records[key][field] = input.value;
+            if (field === 'link') updateRecordLink(fields);
+            if (field === 'price') {
+              updateEstimate();
+              if (onPriceChange) onPriceChange();
+            }
+            save();
+          });
+        });
+        updateRecordLink(fields);
+      }
+
+      function updateRecordLink(fields) {
+        const value = fields.querySelector('[data-record-field="link"]').value.trim();
+        const anchor = fields.querySelector('.record-link');
+        const hint = fields.querySelector('.record-hint');
+        let validUrl = null;
+        if (value) {
+          try {
+            const url = new URL(value);
+            if (url.protocol === 'http:' || url.protocol === 'https:') validUrl = url.href;
+          } catch (_) { /* 주소가 완성되면 링크를 표시합니다. */ }
+        }
+        anchor.hidden = !validUrl;
+        hint.hidden = !value || Boolean(validUrl);
+        if (validUrl) anchor.href = validUrl;
+        else anchor.removeAttribute('href');
+      }
+
+      function updateEstimate() {
+        const total = products.reduce((sum, product) => {
+          const price = state.records[`buy:${product.id}`]?.price || '';
+          return sum + Number(price.replace(/\D/g, '') || 0);
+        }, 0);
+        document.getElementById('appliance-estimate').textContent = total.toLocaleString('ko-KR');
+      }
+
+      function updateCard(card, product) {
+        const read = name => card.querySelector(`[data-field="${name}"]`).value.trim().replace(/\s+/g, ' ');
+        const words = [product.name, read('brand'), read('spec'), read('extra')].filter(Boolean);
+        const query = words.join(' ');
+        const budget = read('budget');
+        const filled = words.slice(1);
+        const estimate = state.records[`buy:${product.id}`]?.price || '';
+        const parts = [...filled, ...(budget ? [`예산 ${budget}원`] : []), ...(estimate ? [`예상 ${estimate}원`] : [])];
+        card.querySelector('.product-summary').textContent = parts.length ? parts.join(' · ') : '검색 조건을 입력해 보세요';
+        card.querySelector('.query-preview span').textContent = query;
+        card.querySelector('.search-button').href = `https://search.danawa.com/dsearch.php?query=${encodeURIComponent(query)}`;
+      }
+
+      function updateCounts() {
+        const moved = document.querySelectorAll('.move-check:checked').length;
+        const bought = document.querySelectorAll('.buy-check:checked').length;
+        const furniture = document.querySelectorAll('.furniture-check:checked').length;
+        const extras = document.querySelectorAll('.extra-check:checked').length;
+        const moveTotal = document.querySelectorAll('.move-check').length;
+        const furnitureTotal = document.querySelectorAll('.furniture-check').length;
+        const extraTotal = document.querySelectorAll('.extra-check').length;
+        const total = moveTotal + products.length + furnitureTotal + extraTotal;
+        document.getElementById('move-count').textContent = moveTotal;
+        document.getElementById('buy-count').textContent = products.length;
+        document.getElementById('other-count').textContent = furnitureTotal + extraTotal;
+        document.getElementById('done-count').textContent = moved + bought + furniture + extras;
+        document.getElementById('total-count').textContent = `/ ${total}개`;
+        document.getElementById('move-progress').textContent = `${moved} / ${moveTotal} 완료`;
+        document.getElementById('buy-progress').textContent = `${bought} / ${products.length} 완료`;
+        document.getElementById('furniture-progress').textContent = `${furniture} / ${furnitureTotal} 완료`;
+        document.getElementById('extra-progress').textContent = `${extras} / ${extraTotal} 완료`;
+        const progress = document.querySelector('.progress');
+        progress.setAttribute('aria-valuemax', String(products.length));
+        progress.setAttribute('aria-valuenow', String(bought));
+        progress.querySelector('span').style.width = `${bought / products.length * 100}%`;
+      }
+
+      let saveTimer;
+      function save() {
+        const status = document.getElementById('save-status');
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          status.textContent = '저장되었습니다 · 이 브라우저에 자동 보관';
+          clearTimeout(saveTimer);
+          saveTimer = setTimeout(() => { status.textContent = '입력한 내용은 이 브라우저에 자동 저장됩니다.'; }, 2200);
+        } catch (_) {
+          status.textContent = '브라우저 저장 기능을 사용할 수 없습니다.';
+        }
+      }
+      updateEstimate();
+      updateCounts();
+    })();
+  </script>
+</body>
+</html>
