@@ -158,6 +158,12 @@
     .record-fields textarea { width: 100%; min-height: 75px; padding: 10px 12px; resize: vertical; background: white; border: 1px solid #dde5df; border-radius: 9px; color: var(--ink); outline: none; font-size: 12px; }
     .record-fields textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(23,123,120,.09); }
     .record-fields textarea::placeholder { color: #a5afae; }
+    .person-note label::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--orange); vertical-align: 1px; }
+    .person-note.seonok label::before { background: var(--teal); }
+    .legacy-note { grid-column: 1 / -1; padding: 12px 14px; border-radius: 10px; background: #f2f5f2; color: #627376; }
+    .legacy-note[hidden] { display: none; }
+    .legacy-note strong { display: block; margin-bottom: 4px; font-size: 11px; }
+    .legacy-note p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
     .record-link { display: inline-flex; align-items: center; width: max-content; max-width: 100%; color: var(--teal); font-size: 11px; font-weight: 800; text-decoration: none; }
     .record-link:hover { text-decoration: underline; }
     .record-link[hidden] { display: none; }
@@ -508,8 +514,8 @@
         const disclosure = document.createElement('details');
         disclosure.className = 'record-disclosure';
         const summary = document.createElement('summary');
-        summary.textContent = '링크 · 메모 · 가격 기록';
-        summary.setAttribute('aria-label', `${name} 링크, 메모, 가격 기록 열기`);
+        summary.textContent = '링크 · 지수/선옥 메모 · 가격';
+        summary.setAttribute('aria-label', `${name} 링크, 지수와 선옥 메모, 가격 기록 열기`);
         disclosure.appendChild(summary);
         container.appendChild(disclosure);
         addRecordFields(disclosure, group, id, name);
@@ -524,9 +530,16 @@
           <h4>${group === 'buy' ? '검색 후 기록' : `${name} 기록`}</h4>
           <div class="field"><label for="${prefix}-price">${group === 'move' ? '이전 예상 비용' : '대략적인 가격'} (원)</label><input id="${prefix}-price" data-record-field="price" type="text" inputmode="numeric" placeholder="예: 1,200,000" autocomplete="off"></div>
           <div class="field"><label for="${prefix}-link">후보 · 참고 링크</label><input id="${prefix}-link" data-record-field="link" type="text" inputmode="url" placeholder="https://..." autocomplete="off"><a class="record-link" target="_blank" rel="noopener noreferrer" hidden>저장한 링크 열기 ↗</a><span class="record-hint" hidden>http 또는 https 주소를 입력해 주세요.</span></div>
-          <div class="field wide"><label for="${prefix}-note">메모</label><textarea id="${prefix}-note" data-record-field="note" placeholder="모델명, 설치 조건, 비교 내용 등을 적어 두세요."></textarea></div>`;
+          <div class="field person-note jisu"><label for="${prefix}-note-jisu">지수 메모</label><textarea id="${prefix}-note-jisu" data-record-field="noteJisu" placeholder="지수가 확인한 모델, 설치 조건 등을 적어 두세요."></textarea></div>
+          <div class="field person-note seonok"><label for="${prefix}-note-seonok">선옥 메모</label><textarea id="${prefix}-note-seonok" data-record-field="noteSeonok" placeholder="선옥이 확인한 모델, 의견 등을 적어 두세요."></textarea></div>
+          <div class="legacy-note" hidden><strong>이전 공용 메모 · 원본 보관</strong><p></p></div>`;
         container.appendChild(fields);
         const saved = state.records[key] || {};
+        if (typeof saved.note === 'string' && saved.note.trim()) {
+          const legacy = fields.querySelector('.legacy-note');
+          legacy.querySelector('p').textContent = saved.note;
+          legacy.hidden = false;
+        }
         fields.querySelectorAll('[data-record-field]').forEach(input => {
           const field = input.dataset.recordField;
           input.value = typeof saved[field] === 'string' ? saved[field] : '';
